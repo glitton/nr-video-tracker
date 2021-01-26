@@ -1,54 +1,75 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-  <!-- Videojs -->
-  <link href="http://vjs.zencdn.net/5.14.1/video-js.css" rel="stylesheet">
-  <script src="http://vjs.zencdn.net/5.14.1/video.js"></script>
-  <!-- ima -->
-  <script src="http://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
-  <!-- contrib-ads -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/5.0.3/videojs.ads.min.css" rel="stylesheet" type="text/css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/5.0.3/videojs.ads.min.js"></script>
-  <!-- videojs + ima -->
-  <link href="../node_modules/videojs-ima/src/videojs.ima.css" rel="stylesheet" type="text/css">
-  <script src="../node_modules/videojs-ima/src/videojs.ima.js"></script>
-  <style>
-    .vjs-ad-playing.vjs-ad-playing .vjs-control-bar {
+  <head>
+    <!-- Videojs -->
+    <link href="http://vjs.zencdn.net/5.14.1/video-js.css" rel="stylesheet" />
+    <script src="http://vjs.zencdn.net/5.14.1/video.js"></script>
+    <!-- ima -->
+    <script src="http://imasdk.googleapis.com/js/sdkloader/ima3.js"></script>
+    <!-- contrib-ads -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/5.0.3/videojs.ads.min.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/videojs-contrib-ads/5.0.3/videojs.ads.min.js"></script>
+    <!-- videojs + ima -->
+    <link
+      href="../node_modules/videojs-ima/src/videojs.ima.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="../node_modules/videojs-ima/src/videojs.ima.js"></script>
+    <style>
+      .vjs-ad-playing.vjs-ad-playing .vjs-control-bar {
         display: none;
-    }
+      }
     </style>
-  <!-- newrelic browser agent. REMEMBER TO REPLACE THIS SCRIPT WITH YOUR OWN BROWSER AGENT -->
-  <script type="text/javascript" src="agent.js"></script>
-  <!-- New Relic Tracker -->
-  <script src="../dist/newrelic-video-videojs.min.js"></script>
-</head>
+    <!-- newrelic browser agent. REMEMBER TO REPLACE THIS SCRIPT WITH YOUR OWN BROWSER AGENT -->
+    <script type="text/javascript" src="../src/browser-agent.js"></script>
+    <!-- New Relic Tracker -->
+    <script src="../dist/newrelic-video-videojs.min.js"></script>
+  </head>
 
-<body>
-  <video id="myVideo" class="video-js vjs-default-skin" controls>
-    <source src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.480p.webm">
-  </video>
-  <script>
-    //PLAYER
-    var player = videojs('myVideo')
+  <body>
+    <video id="myVideo" class="video-js vjs-default-skin" controls loop>
+      <source
+        src="https://upload.wikimedia.org/wikipedia/commons/transcoded/c/c0/Big_Buck_Bunny_4K.webm/Big_Buck_Bunny_4K.webm.480p.webm"
+      />
+    </video>
+    <script>
+      //PLAYER
+      var player = videojs("myVideo");
 
-    //NEWRELIC
-    nrvideo.Core.addTracker(new nrvideo.VideojsTracker(player))
+      //NEWRELIC
+      const tracker = new nrvideo.VideojsTracker(player, {
+        customData: {
+          contentTitle: "Video with AD",
+          customPlayerName: "AD player",
+          customPlayerVersion: "10.0.1",
+          customUsername: "BunnyAD",
+        },
+      });
 
-    // IMA3
-    player.ima({
-      id: 'myVideo',
-      adTagUrl: 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&vid=short_onecue&correlator='
-    }, player.ima.start)
+      nrvideo.Core.addTracker(tracker);
+      tracker.customData.myGreeting = "Video with ADs";
 
-    player.one('click', function () {
-      player.play()
-    })
+      // IMA3
+      player.ima(
+        {
+          id: "myVideo",
+          adTagUrl:
+            "http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&vid=short_onecue&correlator=",
+        },
+        player.ima.start
+      );
 
-    player.ima.initializeAdDisplayContainer()
-    player.ima.requestAds()
+      player.one("click", function () {
+        player.play();
+      });
 
-  </script>
-</body>
-
+      player.ima.initializeAdDisplayContainer();
+      player.ima.requestAds();
+    </script>
+  </body>
 </html>

@@ -20,4 +20,5 @@ coverage/
 *.log
 
 # ignore agent.js
-samples/agent.js
+src/browser-agent.js
+
